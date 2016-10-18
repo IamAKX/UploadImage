@@ -58,7 +58,6 @@ public class HttpConnection {
             urlConnection.setRequestProperty("Content-Language", "en-US");
             OutputStream os = urlConnection.getOutputStream();
             os.write(urlParam.getBytes());
-            Log.i("POST","posted");
             BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             StringBuilder sb = new StringBuilder();
             String line = null;

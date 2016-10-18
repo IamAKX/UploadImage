@@ -19,10 +19,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.ReferenceQueue;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getFileUri() {
-        datetime="2016-10-18 00:48:17";
+        datetime="2016-10-18";
         //datetime= new java.util.Date().toString();
         image_name="IMG_"+datetime;
         file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+File.separator+image_name);
@@ -102,10 +113,38 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             makeRequest();
+  //          makeRequest();
         }
     }
 
-    private void makeRequest() {
+ /*  private void makeRequest() {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(Request.Method.POST, "http://akashapplications.hol.es/mfi/postimage.php",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                       Log.i("###Res",response+"  ");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String,String> map = new HashMap<>();
+                map.put("uid","100");
+                map.put("encoded_string",encoded_string);
+                map.put("image_name",image_name);
+                return map;
+            }
+        };
+        Log.i("###url",request.getBodyContentType()+"\n"+request.getUrl()+"\n"+request.getOriginUrl()+"\n"+request.toString());
+        requestQueue.add(request);
+    }
+*/
+   private void makeRequest() {
         String param = "";
         try {
             param = URLEncoder.encode("type", "UTF-8")
@@ -113,13 +152,10 @@ public class MainActivity extends AppCompatActivity {
 
             param += "&" + URLEncoder.encode("uid", "UTF-8")
                     + "=" + URLEncoder.encode("100", "UTF-8");
-
-            param += "&" + URLEncoder.encode("name", "UTF-8")
-                    + "=" + URLEncoder.encode(image_name, "UTF-8");
-            param += "&" + URLEncoder.encode("date", "UTF-8")
-                    + "=" + URLEncoder.encode(datetime, "UTF-8");
             param += "&" + URLEncoder.encode("encoded_string", "UTF-8")
                     + "=" + URLEncoder.encode(encoded_string, "UTF-8");
+            param += "&" + URLEncoder.encode("name", "UTF-8")
+                    + "=" + URLEncoder.encode("Test_IMG", "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -133,13 +169,9 @@ public class MainActivity extends AppCompatActivity {
             Log.i("rply", rply);
             rply=http.serverReply().trim();
         }
-      //  Toast.makeText(MainActivity.this,"Reply : "+rply.substring(0,25),Toast.LENGTH_LONG).show();
-        if(rply.equals("success"))
-            Toast.makeText(MainActivity.this,"Image Uploaded Successfully",Toast.LENGTH_LONG).show();
-        else
-        {
-            Log.i("######","reply : "+rply);
-            Toast.makeText(MainActivity.this,"Uploading failed",Toast.LENGTH_LONG).show();
-        }
+
+                 Toast.makeText(MainActivity.this,rply,Toast.LENGTH_LONG).show();
+          Log.i("######","reply : "+rply+"\n"+encoded_string+"\n"+image_name);
+
     }
 }
